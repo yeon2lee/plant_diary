@@ -91,7 +91,7 @@
                 </a>
                 <div class="card-body">
                     <p class="card-text">{{post.content}}</p>
-                    <!-- <div class="like-box">
+                    <div class="like-box">
                         {% if user.is_authenticated %}
                         <button id="{{post.id}}" onclick="post_like(this.id)">
                             {% if request.user in post.like.all %}
@@ -106,7 +106,7 @@
                         </button>
                         {% endif %}
                         <span id="like_count{{post.id}}">{{post.like.count}}</span>
-                    </div> -->
+                    </div>
                     <a href="{%url 'diary:detail' post.id%}" style="color:black;">더보기</a>
                 </div>
             </div>
