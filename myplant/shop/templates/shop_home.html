@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load static %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>간단한 지도 표시하기</title>
+    <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=qta0qeetyw"></script>
+
+<style>
+    div {
+        margin: auto;
+    }
+    .box {
+        width: 80%;
+        margin: auto;
+        background-color: white;
+        padding: 50px 0px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+</style>
+<br><br>
+<div class="box">
+    <h3>꽃집들의 위치</h3>
+    <div id="map" style="width:40%;height:400px;"></div>
+    <br>차차 업데이트할 예정..
+</div>
+
+
+<script>
+var HOME_PATH = window.HOME_PATH || '.';
+
+var cityhall = new naver.maps.LatLng(37.5666805, 126.9784147),
+    map = new naver.maps.Map('map', {
+        center: cityhall.destinationPoint(0, 500),
+        zoom: 10
+    }),
+    marker = new naver.maps.Marker({
+        map: map,
+        position: cityhall
+    });
+
+var contentString = [
+        '<div class="iw_inner">',
+        '   <h3>양재꽃시장</h3>',
+        '   <p>서울특별시 서초구 양재동 강남대로 27',
+        '    <br />',
+        '       <a href="http://www.seoul.go.kr" target="_blank">https://flower.at.or.kr/yfmc/</a>',
+        '   </p>',
+        '</div>'
+    ].join('');
+
+var infowindow = new naver.maps.InfoWindow({
+    content: contentString
+});
+
+naver.maps.Event.addListener(marker, "click", function(e) {
+    if (infowindow.getMap()) {
+        infowindow.close();
+    } else {
+        infowindow.open(map, marker);
+    }
+});
+
+infowindow.open(map, marker);
+</script>
+
+{% endblock %}

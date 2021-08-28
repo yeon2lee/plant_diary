@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<style>
+    .box {
+        width: 50%;
+        margin: 30px auto;
+        background-color: white;
+        padding: 30px 0px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+
+    .info {
+        margin: auto;
+    }
+
+    textarea {
+        height: 30px;
+    }
+
+    .pub_date {
+        color: gray;
+        text-align: left;
+        margin: 0px;
+    }
+
+    a {
+        color: gray;
+        text-decoration: none;
+    }
+
+    .write_comment {
+        text-align: left;
+        margin: 10px auto;
+        width: 90%;
+        border: 1px solid lightgray;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+
+    .comment {
+        text-align: left;
+        margin: 10px auto;
+        width: 100%;
+        border: 1px solid lightgray;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+</style>
+<div class="box">
+    <div class="info">
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item" style="text-align: left">
+                <a href="{% url 'user:profile' post.author.username %}">
+                    <img src="{% static 'profile.png' %}" style="width:30px"> {{post.author}}
+                </a>
+            </li>
+        </ul>
+        <br><br>
+        <p class="info">
+            {% if post.image %}
+            <img src="{{post.image.url}}" height="300"> <!--models.py에서 사진을 보내주는 것이 아니라 url 보내주는 것임-->
+            {% endif %}<br>
+            {{post.content|linebreaksbr}}<br>
+        </p>
+    </div><br><br><br>
+    <span class="pub_date" style="float:left">
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{post.pubDate|date:'Y년 m월 d일 h시 i분'}}<br>
+    </span>
+    <span style="float:right;">
+        {% if request.user == post.author %}
+            &nbsp;&nbsp;&nbsp;
+            <a href="{%url 'diary:edit' post.id %}">수정&nbsp;</a>
+            <a href="{%url 'diary:delete' post.id %}">삭제&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
+        {% endif %}<br>
+    </span><br><br>
+    
+    {% for comment in comments %}
+    <div class="write_comment">
+        <div>
+            
+            <br>
+            <a href="{% url 'user:profile' comment.author.username %}">
+                <img src="{% static 'profile.png' %}" style="width:30px"> {{comment.author.username}}
+            </a>
+            <p>{{comment.body}}</p>
+        </div>
+        
+        <div>
+            {% for re_comment in re_comments %} 
+                {% if comment == re_comment.comment_id %} 
+                ⤷<a href="{% url 'user:profile' re_comment.author.username %}">
+                    <img src="{% static 'profile.png' %}" style="width:30px"> {{re_comment.author.username}}
+                </a>
+                <p> &nbsp; {{re_comment.body}}</p>
+                <br>
+                {% endif %} 
+            {% endfor %} 
+            <form action="{% url 'diary:re_comment' post.id comment.id %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{form.as_p}}
+                {% if user.is_authenticated %}
+                <button type="submit" class="btn btn-outline-secondary">대댓글쓰기</button>
+                {% else %}
+                <button type="submit" class="btn btn-outline-secondary" onclick="alert('로그인이 필요합니다')">대댓글쓰기</button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+
+    <br><br>
+        {% endfor %}
+    <div class="write_comment">
+        <br>
+        <form action="{% url 'diary:comment' post.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{form.as_p}}
+            {% if user.is_authenticated %}
+                <button type="submit" class="btn btn-outline-secondary">댓글쓰기</button>
+            {% else %}
+                <button type="submit" class="btn btn-outline-secondary" onclick="alert('로그인이 필요합니다')">댓글쓰기</button>
+            {% endif %}
+        </form>
+    </div>
+    <br>
+</div>
+    
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load static %}
+<style>
+    .list {
+        font-size: 18px;
+        color: gray;
+    }
+    .container {
+        width: 60%;
+        margin: 30px auto;
+        background-color: white;
+        padding: 50px 0px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+
+    .info {
+        width: 90%;
+        margin: 30px auto;
+        background-color: white;
+        padding: 50px 0px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+
+    a {
+        color: gray;
+        text-decoration: none;
+    }
+
+    .heart {
+            width: 20px;
+            height: 20px;
+    }
+
+    .like-box button {
+            border: none;
+            background-color: white;
+    }
+</style>
+
+<script type="text/javascript">
+    function post_like(p_id){
+        $.ajax({
+            type: "GET",
+            url: "{% url 'diary:post_likes' %}",
+            data: {
+                'blog_id':p_id
+            },
+            dataType: 'json',
+            success: function(response){
+                $('#like_count'+p_id).html(response.like_count)
+                    if(response.message == "좋아요"){
+                        $('#heart'+p_id).attr("src", "{%static 'heart.svg' %}")
+                    } else if (response.message == "좋아요 취소") {
+                        $('#heart'+p_id).attr("src", "{%static 'empty_heart.svg' %}")
+                    }
+            }
+        })
+    }
+</script>
+
+<br><br>
+<div class="container"> 
+    <h1>Plant Diary</h1>
+    {% if user.is_authenticated %}
+        <a href="{% url 'diary:new' %}" style="color:black;">글쓰기</a><br><br>
+    {% endif %}
+    <form class="form-inline my-2 my-lg-0" action="{% url 'diary:search' %}" method="get">
+        <input type="search" placeholder="Search" aria-label="Search" name="q" value="{{q}}" style="height:36px;">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form><br><br>
+    <div class="info">
+        {% for post in posts %}
+        <div class="col">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" style="text-align: left">
+                    <a href="{% url 'user:profile' post.author.username %}">
+                        <img src="{% static 'profile.png' %}" style="width:30px"> {{post.author}}
+                    </a>
+                </li>
+            </ul>
+            <div class="card" style="text-align:center;">
+                <br>
+                <a href="{%url 'diary:detail' post.id%}">
+                    {% if post.image %}
+                    <img src="{{post.image.url}}" class="card-img-top" alt="이것은 이미지" style="width:250px;">
+                    {% endif %}
+                </a>
+                <div class="card-body">
+                    <p class="card-text">{{post.content}}</p>
+                    <!-- <div class="like-box">
+                        {% if user.is_authenticated %}
+                        <button id="{{post.id}}" onclick="post_like(this.id)">
+                            {% if request.user in post.like.all %}
+                            <img class="heart" id="heart{{post.id}}" src="{% static 'heart.svg' %}" alt="full_heart">
+                            {% else %}
+                            <img class="heart" id="heart{{post.id}}" src="{% static 'empty_heart.svg' %}" alt="empty_heart">
+                            {% endif %}
+                        </button>
+                        {% else %}
+                        <button id="{{post.id}}" onclick="alert('로그인이 필요합니다')">
+                            <img class="heart" id="heart" src="{% static 'empty_heart.svg' %}" alt="empty_heart">
+                        </button>
+                        {% endif %}
+                        <span id="like_count{{post.id}}">{{post.like.count}}</span>
+                    </div> -->
+                    <a href="{%url 'diary:detail' post.id%}" style="color:black;">더보기</a>
+                </div>
+            </div>
+        </div><br><hr>
+        {% endfor %}
+    </div>
+</div>
+
+<br>
+<div>
+    {%if posts.has_previous%}
+    <a href="?q={{q}}&page=1">처음</a> 
+    <a href="?q={{q}}&page={{posts.previous_page_number}}">이전</a>
+    {%endif%}
+
+    <span>{{posts.number}}</span>
+    <span>of</span>
+    <span>{{posts.paginator.num_pages}}</span>
+
+    {%if posts.has_next%}
+        <a href="?q={{q}}&page={{posts.next_page_number}}">다음</a>
+        <a href="?q={{q}}&page={{posts.paginator.num_pages}}">마지막</a> <!-- num_pages: 전체 페이지 수 반환 함수-->
+    {%endif%}
+</div>
+
+{% endblock %}

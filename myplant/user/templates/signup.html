@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    .box {
+        width: 40%;
+        margin: 30px auto;
+        background-color: white;
+        padding: 50px 0px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+
+    input {
+        border: 1px solid lightgray;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+    }
+
+    input:focus {
+        outline: none;
+    }
+</style>
+
+<div class="box">
+    <h1>Sign up!</h1>
+    <form action="{% url 'user:signup' %}" method="post">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>   
+            <p>
+                {{ field.label_tag }}
+                {{ field }}
+            </p>
+        </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-outline-secondary">회원가입</button>
+    </form>
+</div>
+{% endblock %}

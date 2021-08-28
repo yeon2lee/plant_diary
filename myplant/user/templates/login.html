@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+
+{% load socialaccount %} 
+{% providers_media_js %} <!--로그인 템플릿 파일 사용 가능.. provider에서 제공-->
+
+<style>
+    .box {
+        width: 40%;
+        margin: 30px auto;
+        background-color: white;
+        padding: 50px 0px;
+        border-radius: 10px;
+        box-shadow: 1px 1px 3px 1px #dadce0;
+    }
+
+    input {
+        border-top: none;
+        border-left: none;
+        border-right: none;
+    }
+
+    input:focus {
+        outline: none;
+    }
+
+
+</style>
+<div class="box">
+    <h1>Login</h1>
+    <form action="{%url 'user:login' %}" method="post">
+        {%csrf_token%} <!-- POST 요청에 대해서만 csrf token을 발급하고 체크 -->
+        {% load static %}
+        {% load crispy_forms_tags %}
+            {{form.as_p}}
+        <a href="{% provider_login_url 'google' %}"> 
+            <img src="{% static 'google.png' %}" alt="구글로그인" height="45"> 
+        </a> <br><br>
+        <button type="submit" class="btn btn-outline-secondary">로그인</button>
+    </form>
+</div>
+{% endblock %}
