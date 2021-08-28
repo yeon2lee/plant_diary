@@ -52,7 +52,7 @@
     <div class="info">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" style="text-align: left">
-                <a href="{% url 'user:profile' post.author.username %}">
+                <a href="{% url 'user:profile' post.author.id %}">
                     <img src="{% static 'profile.png' %}" style="width:30px"> {{post.author}}
                 </a>
             </li>
@@ -81,7 +81,7 @@
         <div>
             
             <br>
-            <a href="{% url 'user:profile' comment.author.username %}">
+            <a href="{% url 'user:profile' comment.author.id %}">
                 <img src="{% static 'profile.png' %}" style="width:30px"> {{comment.author.username}}
             </a>
             <p>{{comment.body}}</p>
@@ -90,7 +90,7 @@
         <div>
             {% for re_comment in re_comments %} 
                 {% if comment == re_comment.comment_id %} 
-                ⤷<a href="{% url 'user:profile' re_comment.author.username %}">
+                ⤷<a href="{% url 'user:profile' re_comment.author.id %}">
                     <img src="{% static 'profile.png' %}" style="width:30px"> {{re_comment.author.username}}
                 </a>
                 <p> &nbsp; {{re_comment.body}}</p>

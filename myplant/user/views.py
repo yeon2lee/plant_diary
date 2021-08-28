@@ -35,9 +35,9 @@ def register_view(request):
         form = RegisterForm()
         return render(request, 'signup.html', {'form':form})
 
-def profile_view(request, username):
+def profile_view(request, id):
     User = get_user_model()
-    user = get_object_or_404(User, username=username)
+    user = get_object_or_404(User, id=id)
     context = {
         'user': user
     }

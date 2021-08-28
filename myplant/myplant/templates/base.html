@@ -44,7 +44,7 @@
                 {{user.username}}님
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="nav-link" href="{% url 'user:profile' request.user.username %}">profile</a></li>
+                <li><a class="nav-link" href="{% url 'user:profile' request.user.id %}">profile</a></li>
                 <li><hr class="dropdown-divider"></li>
                 <li><a class="nav-link" href="{% url 'user:logout' %}">Logout</a></li>
               </ul>
