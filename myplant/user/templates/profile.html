@@ -48,7 +48,25 @@
         float: left;
     }
 
+    #follower_list {
+        display: none;
+    }
+
+    #following_list {
+        display: none;
+    }
+
 </style>
+<script type="text/javascript">
+    function doDisplay(clicked_id) {
+        var con = document.getElementById(clicked_id)
+        if (con.style.display == 'none') {
+            con.style.display = 'block';
+        } else {
+            con.style.display = 'none';
+        }
+    }
+</script>
 
 <div class="box">
     {% with user_followers=writer.followers.all %}
@@ -65,8 +83,22 @@
                 {% endif %}
                 <hr>
                 <ul class="info_list">
-                    <li class="info">팔로잉 <br>{{ writer.followings.count }}</li>
-                    <li class="info">팔로워 <br>{{ user_followers|length }}</li>
+                    <li class="info">
+                        팔로워 <br><a href="javascript:doDisplay('follower_list')">{{ user_followers|length }}</a><br>
+                        <div id="follower_list">
+                            {% for follower in user_followers %}
+                                <a href="{% url 'user:profile' follower.pk %}">{{follower}}</a><br>
+                            {% endfor %}
+                        </div>
+                    </li>
+                    <li class="info">
+                        팔로잉 <br><a href="javascript:doDisplay('following_list')">{{ writer.followings.count }}</a><br>
+                        <div id="following_list">
+                            {% for following in writer.followings.all %}
+                            <a href="{% url 'user:profile' following.pk %}">{{following}}</a><br>
+                        {% endfor %}
+                        </div>
+                    </li>
                     <li class="info">게시물 <br>{{posts.count}}</li>
                 </ul>
             </li>
