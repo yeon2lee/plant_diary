@@ -12,13 +12,13 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 def home(request):
-    diary_list = Diary.objects.all()
+    list_all = Diary.objects.all()
     if request.user.is_anonymous:
-        diary_list = diary_list.filter(open='all')
+        diary_list = list_all.filter(open='all')
     else:
-        diary_list = diary_list.filter(
+        diary_list = list_all.filter(
             Q(open='all') |
-            Q(open='follow') |
+            (Q(open='follow') & (Q(author__followings=request.user) | Q(author=request.user))) | 
             (Q(open='private') & Q(author=request.user))
         )
     paginator = Paginator(diary_list, 4) 

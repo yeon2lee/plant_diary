@@ -111,8 +111,6 @@
         {% if request.user == writer %}
         <h4>좋아요한 글 목록</h4>
         {% for post in like_posts %}
-        <!--중간에 공개범위를 바꿀 경우를 대비-->
-        {% if post.open == 'all' or post.open == 'follow' and request.user in post.author.follwings.all %}
             <a href="{% url 'diary:detail' post.id %}">
                 <div class="content">
                     {% if post.image %}
@@ -123,15 +121,12 @@
                 <a href="{% url 'user:profile' post.author.pk %}">by. {{post.author}}</a> 
                 <br><br>
                 </div>
-            
-        {% endif %}
         {% endfor %}
         <br>
         {% endif %}
 
         <h4>작성한 글 목록</h4>
         {% for post in posts %}
-        {% if post.open != 'follow' or request.user == post.author or request.user in post.author.followings.all %}
         <a href="{% url 'diary:detail' post.id %}">
             <div class="content">
                 {% if post.image %}
@@ -140,7 +135,6 @@
                 {{post.content|linebreaksbr}}<br><br>
             </div>
         </a>
-        {% endif %}
         {% endfor %}
     </div><br><br><br>
     {% if request.user == writer %}
@@ -149,21 +143,4 @@
     {% endif %}
     {% endwith %}
 </div>
-
-{% comment %}
-<hr>
-<h3>작성한 글 목록</h3>
-{% for article in user.article_set.all %}
-    <a href="{% url 'user:profile' article.pk %}">
-        <p>{{ article.title }}</p>
-    </a>
-{% endfor %}
-<h3>좋아요한 글 목록</h3>
-{% for article in writer.like_articles.all %}
-    <a href="{% url 'user:profile' article.pk %}">
-        <p>{{ article.title }}</p>
-    </a>
-{% endfor %}
-{% endcomment %}
-
 {% endblock %}

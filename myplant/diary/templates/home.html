@@ -74,7 +74,6 @@
     </form><br><br>
     <div class="info">
         {% for post in posts %}
-        {% if post.open != 'follow' or request.user == post.author or request.user in post.author.followings.all %}
         <div class="col">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" style="text-align: left">
@@ -119,7 +118,6 @@
                 </div>
             </div>
         </div><br><hr>
-        {% endif %}
         {% endfor %}
     </div>
 </div>
