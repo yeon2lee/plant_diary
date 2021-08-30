@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<style>
+    .content {
+        margin: auto;
+        width: 30%;
+    }
+
+    @media screen and (max-width: 768px) { 
+        .content { 
+            width: 70%; 
+        } 
+    }
+</style>
+
+<div class="box">
+    <h3>회원정보 수정</h3>
+    <div class="content">
+        <form method="post" enctype="multipart/form-data">
+            {%csrf_token%} 
+            {% load static %}
+            {% load crispy_forms_tags %}
+            {{user_change_form | crispy}}<br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -12,11 +12,20 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
 def home(request):
-    diary_list = Diary.objects.all() # 블로그 모든 글을 대상으로
-    paginator = Paginator(diary_list, 4) # request된 페이지가 뭔지를 알아내고 (request페이지를 변수에 담아내고)
-    page = request.GET.get('page') # key값이 page인 딕셔너리형의 value값을 page에 담아줌 (get(): 정보가 오지 않아도 넘어감)
-    posts = paginator.get_page(page) # posts에는 request된 page가 담김
-    return render(request, 'home.html', {'posts':posts})
+    diary_list = Diary.objects.all()
+    users = get_user_model()
+    if request.user.is_anonymous:
+        diary_list = diary_list.filter(open='all')
+    else:
+        diary_list = diary_list.filter(
+            Q(open='all') |
+            Q(open='follow') |
+            (Q(open='private') & Q(author=request.user))
+        )
+    paginator = Paginator(diary_list, 4) 
+    page = request.GET.get('page') 
+    posts = paginator.get_page(page) 
+    return render(request, 'home.html', {'posts':posts, 'users':users})
 
 def detail(request, post_id): 
     post = get_object_or_404(Diary, pk = post_id) 
@@ -105,7 +114,7 @@ def search(request):
         return render(request, 'home.html', {'posts' : posts, 'q' : q, 'page':page})
     else:
         return render(request, 'home.html')
-    
+
 def post_likes(request):
   if request.is_ajax():
     blog_id = request.GET.get('blog_id')

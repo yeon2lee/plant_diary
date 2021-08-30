@@ -13,7 +13,7 @@
         box-shadow: 1px 1px 3px 1px #dadce0;
     }
 
-    .info {
+    .container {
         margin: auto;
         width: 90%;
         border: 1px solid lightgray;
@@ -34,13 +34,41 @@
         text-decoration: none;
     }
 
+    .info_list {
+        list-style:none;
+        margin: auto;
+        padding: 0;
+        text-align: center;
+    }
+
+    .info {
+        margin: 0 10px;
+        padding: 0;
+        border : 0;
+        float: left;
+    }
+
 </style>
 
 <div class="box">
-    <div class="info">
+    {% with user_followers=writer.followers.all %}
+    <div class="container">
         <ul class="list-group list-group-flush">
             <li class="list-group-item" style="text-align: left">
                 {{writer}}님의 프로필
+                {% if request.user != writer %}
+                    {% if request.user in user_followers %}
+                        <a href="{% url 'user:follow' writer.pk %}">팔로우 취소</a>
+                    {% else %}
+                        <a href="{% url 'user:follow' writer.pk %}">팔로우</a>
+                    {% endif %}
+                {% endif %}
+                <hr>
+                <ul class="info_list">
+                    <li class="info">팔로잉 <br>{{ writer.followings.count }}</li>
+                    <li class="info">팔로워 <br>{{ user_followers|length }}</li>
+                    <li class="info">게시물 <br>{{posts.count}}</li>
+                </ul>
             </li>
             <li class="list-group-item" style="text-align: left">
                 <img src="{% static 'profile.png' %}" style="width:30px"> {{writer}}<br>
@@ -48,7 +76,6 @@
             </li>
         </ul>
         <br><br>
-        게시물 수: {{posts.count}}
         {% for post in posts %}
         <a href="{% url 'diary:detail' post.id %}">
             <div class="content">
@@ -59,8 +86,28 @@
             </div>
         </a>
         {% endfor %}
-        
     </div><br><br><br>
+    {% if request.user == writer %}
+        <a href="{% url 'user:update' %}">회원 수정</a>
+        <a href="{% url 'user:delete' %}">회원 탈퇴</a>
+    {% endif %}
+    {% endwith %}
 </div>
+
+{% comment %}
+<hr>
+<h3>작성한 글 목록</h3>
+{% for article in user.article_set.all %}
+    <a href="{% url 'user:profile' article.pk %}">
+        <p>{{ article.title }}</p>
+    </a>
+{% endfor %}
+<h3>좋아요한 글 목록</h3>
+{% for article in user.like_articles.all %}
+    <a href="{% url 'user:profile' article.pk %}">
+        <p>{{ article.title }}</p>
+    </a>
+{% endfor %}
+{% endcomment %}
 
 {% endblock %}

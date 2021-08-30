@@ -74,10 +74,11 @@
     </form><br><br>
     <div class="info">
         {% for post in posts %}
+        {% if post.open == 'follow' and request.user in post.author.followers.all or post.open != 'follow' %}
         <div class="col">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" style="text-align: left">
-                    <a href="{% url 'user:profile' post.author.id %}">
+                    <a href="{% url 'user:profile' post.author.pk %}">
                         <img src="{% static 'profile.png' %}" style="width:30px"> {{post.author}}
                     </a>
                 </li>
@@ -111,6 +112,7 @@
                 </div>
             </div>
         </div><br><hr>
+        {% endif %}
         {% endfor %}
     </div>
 </div>
