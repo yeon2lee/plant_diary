@@ -13,7 +13,6 @@ from django.db.models import Q
 
 def home(request):
     diary_list = Diary.objects.all()
-    users = get_user_model()
     if request.user.is_anonymous:
         diary_list = diary_list.filter(open='all')
     else:
@@ -25,7 +24,7 @@ def home(request):
     paginator = Paginator(diary_list, 4) 
     page = request.GET.get('page') 
     posts = paginator.get_page(page) 
-    return render(request, 'home.html', {'posts':posts, 'users':users})
+    return render(request, 'home.html', {'posts':posts})
 
 def detail(request, post_id): 
     post = get_object_or_404(Diary, pk = post_id) 

@@ -7,6 +7,7 @@ from .forms import RegisterForm
 from .forms import CustomUserChangeForm
 from django.contrib import messages
 from diary.models import Diary
+from django.db.models import Q
 
 def login_view(request):
     if request.method == 'POST': 
@@ -43,8 +44,15 @@ def profile_view(request, pk):
     context = {
         'user': user
     }
-    posts = Diary.objects.all()
-    posts = posts.filter(author=user)
+    posts = Diary.objects.all().filter(author=user)
+    if request.user.is_anonymous:
+        posts = posts.filter(open='all')
+    else:
+        posts = posts.filter(
+            Q(open='all') |
+            Q(open='follow') |
+            (Q(open='private') & Q(author=request.user))
+        )
     return render(request, 'profile.html', {'posts':posts, 'context':context, 'writer':user})
 
 def profile_update(request):
