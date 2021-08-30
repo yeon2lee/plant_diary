@@ -74,7 +74,7 @@
     </form><br><br>
     <div class="info">
         {% for post in posts %}
-        {% if post.open != 'follow' or request.user == post.author or request.user in post.author.followers.all %}
+        {% if post.open != 'follow' or request.user == post.author or request.user in post.author.followings.all %}
         <div class="col">
             <ul class="list-group list-group-flush">
                 <li class="list-group-item" style="text-align: left">
@@ -114,7 +114,8 @@
                         {% endif %}
                         <span id="like_count{{post.id}}">{{post.like.count}}</span>
                     </div>
-                    <a href="{%url 'diary:detail' post.id%}" style="color:black;">더보기</a>
+                    <a href="{%url 'diary:detail' post.id%}" style="color:black;">더보기</a><br>
+                    <span style="color:lightgray">({{post.open}})</span>
                 </div>
             </div>
         </div><br><hr>

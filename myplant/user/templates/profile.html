@@ -79,25 +79,31 @@
         {% if request.user == writer %}
         <h4>좋아요한 글 목록</h4>
         {% for post in like_posts %}
-        <a href="{% url 'diary:detail' post.id %}">
-            <div class="content">
-                {% if post.image %}
-                <img src="{{post.image.url}}" height="300"> <!--models.py에서 사진을 보내주는 것이 아니라 url 보내주는 것임-->
-                {% endif %}<br>
-                {{post.content|linebreaksbr}}<br><br>
-            </div>
-        </a>
+        <!--중간에 공개범위를 바꿀 경우를 대비-->
+        {% if post.open == 'all' or post.open == 'follow' and request.user in post.author.follwings.all %}
+            <a href="{% url 'diary:detail' post.id %}">
+                <div class="content">
+                    {% if post.image %}
+                    <img src="{{post.image.url}}" height="300"> <!--models.py에서 사진을 보내주는 것이 아니라 url 보내주는 것임-->
+                    {% endif %}<br>
+                    {{post.content|linebreaksbr}}<br>
+            </a>
+                <a href="{% url 'user:profile' post.author.pk %}">by. {{post.author}}</a> 
+                <br><br>
+                </div>
+            
+        {% endif %}
         {% endfor %}
         <br>
         {% endif %}
 
         <h4>작성한 글 목록</h4>
         {% for post in posts %}
-        {% if post.open != 'follow' or request.user == post.author or request.user in post.author.followers.all %}
+        {% if post.open != 'follow' or request.user == post.author or request.user in post.author.followings.all %}
         <a href="{% url 'diary:detail' post.id %}">
             <div class="content">
                 {% if post.image %}
-                <img src="{{post.image.url}}" height="300"> <!--models.py에서 사진을 보내주는 것이 아니라 url 보내주는 것임-->
+                <img src="{{post.image.url}}" height="280"> <!--models.py에서 사진을 보내주는 것이 아니라 url 보내주는 것임-->
                 {% endif %}<br>
                 {{post.content|linebreaksbr}}<br><br>
             </div>
