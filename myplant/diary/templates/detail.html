@@ -48,6 +48,11 @@
         box-shadow: 1px 1px 3px 1px #dadce0;
     }
 </style>
+{% if post.open == 'private' and request.user != post.author %}
+    <h3>올바른 접근이 아닙니다.</h3> 
+{% elif post.open == 'follow' and request.user not in post.author.followings.all %}
+    <h3>올바른 접근이 아닙니다.</h3> 
+{% else %}
 <div class="box">
     <div class="info">
         <ul class="list-group list-group-flush">
@@ -126,5 +131,6 @@
     </div>
     <br>
 </div>
+{% endif %}
     
 {% endblock %}
