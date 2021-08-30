@@ -76,6 +76,22 @@
             </li>
         </ul>
         <br><br>
+        {% if request.user == writer %}
+        <h4>좋아요한 글 목록</h4>
+        {% for post in like_posts %}
+        <a href="{% url 'diary:detail' post.id %}">
+            <div class="content">
+                {% if post.image %}
+                <img src="{{post.image.url}}" height="300"> <!--models.py에서 사진을 보내주는 것이 아니라 url 보내주는 것임-->
+                {% endif %}<br>
+                {{post.content|linebreaksbr}}<br><br>
+            </div>
+        </a>
+        {% endfor %}
+        <br>
+        {% endif %}
+
+        <h4>작성한 글 목록</h4>
         {% for post in posts %}
         {% if post.open != 'follow' or request.user == post.author or request.user in post.author.followers.all %}
         <a href="{% url 'diary:detail' post.id %}">
@@ -105,7 +121,7 @@
     </a>
 {% endfor %}
 <h3>좋아요한 글 목록</h3>
-{% for article in user.like_articles.all %}
+{% for article in writer.like_articles.all %}
     <a href="{% url 'user:profile' article.pk %}">
         <p>{{ article.title }}</p>
     </a>

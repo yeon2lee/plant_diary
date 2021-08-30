@@ -44,6 +44,7 @@ def profile_view(request, pk):
     context = {
         'user': user
     }
+    like_posts = Diary.objects.all().filter(like=user)
     posts = Diary.objects.all().filter(author=user)
     if request.user.is_anonymous:
         posts = posts.filter(open='all')
@@ -53,7 +54,7 @@ def profile_view(request, pk):
             Q(open='follow') |
             (Q(open='private') & Q(author=request.user))
         )
-    return render(request, 'profile.html', {'posts':posts, 'context':context, 'writer':user})
+    return render(request, 'profile.html', {'posts':posts, 'context':context, 'writer':user, 'like_posts':like_posts})
 
 def profile_update(request):
     if request.method == 'POST':

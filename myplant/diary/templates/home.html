@@ -94,13 +94,19 @@
                     <p class="card-text">{{post.content}}</p>
                     <div class="like-box">
                         {% if user.is_authenticated %}
-                        <button id="{{post.id}}" onclick="post_like(this.id)">
-                            {% if request.user in post.like.all %}
-                            <img class="heart" id="heart{{post.id}}" src="{% static 'heart.svg' %}" alt="full_heart">
+                            {% if request.user != post.author %}
+                            <button id="{{post.id}}" onclick="post_like(this.id)">
+                                {% if request.user in post.like.all %}
+                                <img class="heart" id="heart{{post.id}}" src="{% static 'heart.svg' %}" alt="full_heart">
+                                {% else %}
+                                <img class="heart" id="heart{{post.id}}" src="{% static 'empty_heart.svg' %}" alt="empty_heart">
+                                {% endif %}
+                            </button>
                             {% else %}
-                            <img class="heart" id="heart{{post.id}}" src="{% static 'empty_heart.svg' %}" alt="empty_heart">
+                            <button id="{{post.id}}" onclick="alert('내가 작성한 글에는 좋아요를 누를 수 없습니다.')">
+                                <img class="heart" id="heart" src="{% static 'empty_heart.svg' %}" alt="empty_heart">
+                            </button>
                             {% endif %}
-                        </button>
                         {% else %}
                         <button id="{{post.id}}" onclick="alert('로그인이 필요합니다')">
                             <img class="heart" id="heart" src="{% static 'empty_heart.svg' %}" alt="empty_heart">
