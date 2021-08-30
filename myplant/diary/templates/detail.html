@@ -66,7 +66,8 @@
         </p>
     </div><br><br><br>
     <span class="pub_date" style="float:left">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{post.pubDate|date:'Y년 m월 d일 h시 i분'}} ({{post.open}})<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{post.pubDate|date:'Y년 m월 d일 h시 i분'}} <br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;공개 범위: {{post.open}}
     </span>
     <span style="float:right;">
         {% if request.user == post.author %}
